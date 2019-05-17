@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.getcwd()))
 from django.shortcuts import render
 from scrapy.cmdline import execute 
 from django.http import HttpResponse
+from news.models import article,user
 from news.function import *
 
 cwd = os.getcwd()
@@ -68,7 +69,7 @@ def get_article(request): # 获取文章所有信息加内容
     return HttpResponse(json.dumps(article), content_type="application/json")
 
 # TODO 获取读者词汇掌握程度，推荐难度最适合的文章
-def get_similiar(request, paramList): # 推荐难度最合适的10篇文章，参数是读者的词汇覆盖比率
+def get_similiar(request, paramList):
 
     return True
 
@@ -76,9 +77,20 @@ def get_similiar(request, paramList): # 推荐难度最合适的10篇文章，�
 # TODO 按不同难度返回文章
 
 
+# TODO 随机从各个词库抽取单词返回给前端
+def randomWords():
+
+    libpath = os.path.dirname(os.getcwd())+"seprojext\\static\\lib" # 词库所在位置
+    
+    
+    for lib in os.listdir(libpath):
+        print (lib)
+
+
+
 
 
 # filepath = "F:\\seprojext\\tutorial\\tutorial\\spiders\\res\\news\\5 questions about Iran's nuclear deal announcement.json"
 # get_content(filepath)
 
-test()
+randomWords()

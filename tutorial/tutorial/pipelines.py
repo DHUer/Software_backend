@@ -12,6 +12,8 @@ import codecs
 import os
 import sys
 import re
+
+import time
 class TutorialPipeline(object):
     def process_item(self, item, spider):
         return item
@@ -55,6 +57,7 @@ class CnnPipeline(object):
         print(sql)
         self.db_cur.execute(sql, values)
 
+
 class JsonPipeline(object):
     def __init__(self):
 
@@ -64,6 +67,8 @@ class JsonPipeline(object):
         
         if (not os.path.exists(filepath)):
             os.makedirs(filepath)
+        # print(filepath)
+        # time.sleep(20)
 
         self.file = codecs.open(filepath+"\\news.json", 'w') # , encoding='utf-8'这个参数暂时不用，因为读取的时候会报错
 
