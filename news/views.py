@@ -14,8 +14,8 @@ cwd = os.getcwd()
 
 # Create your views here.
 
-def test():
-    print(hello())
+def test(request):
+    return HttpResponse("hello")
 
 def get_content(filepath): # 根据文章路径读取内容
 
@@ -80,7 +80,7 @@ def get_similiar(request, paramList):
 # TODO 随机从各个词库抽取单词返回给前端
 def randomWords():
 
-    libpath = os.path.dirname(os.getcwd())+"seprojext\\static\\lib" # 词库所在位置
+    libpath = os.path.dirname(os.getcwd())+"/seprojext/static/lib" # 词库所在位置
     
     
     for lib in os.listdir(libpath):
