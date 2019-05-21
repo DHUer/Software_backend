@@ -1,32 +1,93 @@
 import numpy as np
 import json
+import ast
 from news.models import article,user
 import urllib
+import os
+import re
+import random
+from datetime import datetime
+from django.forms.models import model_to_dict
+from django.core import serializers
+from django.conf import settings
+base_dir = settings.BASE_DIR
 
-
+VOCA_BOOK = base_dir+"\\static\\voca_book\\" # 单词本文件的根目录
+RANDOM_WORDS = 10 # 每个词库随机取的词数
 # 在views部分用到的功能性函数全部放到这里~
 # 在views部分只编写接口函数
 def hello():
     return "this is function~"
 
-def top_n(dict, sample):
 
-    for key in dict:
-        dist = np.sqrt(np.sum(np.square(sample - dict[key]))) # sample是用户词汇覆盖度数据
-        dict[key].append(dist) #将欧式距离加入每个文本的list，位置是最后一个，前7个都是覆盖度
+# 获取最合适的10篇文章，sample是用户数据
+def top_n(sample):
 
-    # print(dict.items())
-    sort = sorted(dict.items(), key = lambda item:item[1][7], reverse = True) # 由大到小排列，返回的是list
+    # 对数据库操作
+    data = article.objects.all() # get all articles
 
-    title = []
-    for index, item in enumerate(sort):
+    # 只抽取文章的内容地址以及覆盖率来比较,key是content，value是cover_rate
+    res = {}
 
-        if index == 10:
-            break
+    for item in data: # 计算所有文章的相似度
+        c_r = item.cover_rate
+        cover_rate = ast.literal_eval(c_r) # 将文章覆盖率转成字典
+        c_r_list = []
 
-        title.append(item[0])
+        for key in cover_rate:
+            c_r_list.append(cover_rate[key]) # 覆盖率存入list
 
-    return title # 返回文章标题
+        dist = np.sqrt(np.sum(np.square(sample - np.asarray(c_r_list)))) # sample是用户词汇覆盖度数据
+
+        res[item.id] = dist # 以id作为字典字段
+        
+    sort_list = sorted(res.items(), key = lambda item:item[1], reverse = True)
+    sort_list = sort_list[:10] # 只取前十个
+
+    # 获取文章内容
+    res = []
+    for key in sort_list:
+        item = article.objects.get(id = key[0])
+        with open(item.content, 'r') as f:
+            item.content = f.read()
+
+        item_dict = dict(
+            id=item.id, title=item.title, author=item.author,
+            atype=item.atype, picUrl=item.picUrl, lettNum=item.lettNum,
+            publish_time=item.publish_time
+        )
+        res.append(item_dict)
+        # print(type(item))
+
+    return res # list
+
+def get_random_words():
+    
+    lib_list = os.listdir(base_dir+"\\static\\lib") #获取词库
+    
+    res = {} # store all lib words
+    for lib in lib_list:
+
+        lib_name = re.findall(r'(.+?)\.',str(lib))[0] # 获取词库名
+
+        random_list = [] # store words
+
+        with open(base_dir+"\\static\\lib\\"+lib,'r') as f:
+            words = json.load(f)
+        
+        num = len(words) # 单词总数
+
+        for i in range(RANDOM_WORDS):
+            word = words[random.randint(0,num)] # get a random word
+
+            while word in random_list:
+                word = random.randint(0,num)
+            
+            random_list.append(word)
+
+        res[lib_name] = random_list
+
+    return res # 返回字典，key是词库名，value是单词list
 
 
 
@@ -38,97 +99,80 @@ def executeCrawl():
     filename = "hah"
     return filename
 
-# 讲所有文章存入数据库
+# 所有文章存入数据库
 def save_articles():
-    # 唤起爬虫
-    filename = execcuteCrawl()
+    # 唤起爬虫,目前并唤不起来
+    # filename = execcuteCrawl()
+
+    filename = base_dir + "\\static\\res\\news.json"
 
     with open(filename, 'r') as f:
-        data = json.load(f)
+        while True:
+            line = f.readline()
+            if not line:
+                break
 
-        # 读出数据
-
-        for item in data:
-            # addOne = article(title = , content = , author = ,
-            #         type = , picUrl = , lettNum = , time = , cover_rate = )
+            # 读出数据
+            data = json.loads(line) # dictionary
+            
+            # 存入数据库
+            addOne = article(title = data['title'], content = data['content'], author = data['author'],
+                    atype = data['types'], picUrl = "", lettNum = 0, publish_time = data['update_time'], 
+                    cover_rate = str(data['cover_rate']), date = datetime.now())
 
             addOne.save()
 
+# todo 删除单词，还没测试
+def deleteWord(id, word):
 
-    # test 尝试获取id为1的对象
-    tmp = Article.objects.filter().filter(id=1)
-    print(tmp)
-
-
-# 创建用户
-def createUser(request):
-    code = request.POST['code'] # 获取用户初次登陆的code
-
-    # 这里为了安全性不直接取出数据，而是通过request直接获取
-    param = {
-        'appid': request.POST['appid'],
-        'secret': request.POST['secret'],
-        'js_code': request.POST['code'],
-        'grant_type': 'authorization_code'
-    }
-
-    # https://www.cnblogs.com/poerli/p/6429673.html
+    try:
+        uuser = user.objects.get(uid = id)
+        bookpath = uuser.dict # 获取单词本所在位置
 
 
+        with open(bookpath, 'w') as f:
+            allwords = list(json.loads(f))
 
+            if word in allwords:
+                allwords.remove(word)
 
+            f.write(json.dumps(allwords))
 
-
-# 收藏文章
-def collectArticle(request):
-
+    except:
+        print("删除单词出错")
+        return False
 
     return True
 
-# 向单词本中添加单词
-def addNewWords(request):
+# todo 添加生词，还没测试
+def addWord(id, word):
 
-    try: 
+    try:
+        uuser = user.objects.get(uid = id)
+        bookpath = uuser.dict 
 
-        id = request.POST['openid']
-        word = request.POST['word']
+        allwords = {}
 
-        user = User.objects.get(openid = id)
-        filepath = user.dict # 获取用户单词本存放地址
+        with open(bookpath, 'r') as f:
+            allwords = dict(json.load(f))
 
-        with open(filepath, 'a') as f:
-            wlist = json.load(f)
-            # 读成list格式，并添加新的词，然后写回去
+        with open(bookpath, 'w') as f:
+            if word in allwords.keys():
+                allwords[word] = allwords[word] + 1
+            else:
+                allwords[word] = 0
 
+            f.write(json.dumps(allwords))
 
-        return True
-
-    finally:
+    except:
+        print("添加单词出错...")
         return False
+    else:
+        return True
 
 
     
-
-
-
-
-# 获得用户测试词汇量数据
-def getCoverRate(request):
-
-    try:
-        id = request.POST['openid'] # 获取用户id
-        data = request.POST['cover_rate'] # 获取词汇测试结果
-
-        user = User.objects.get(openid = id)
-
-        user.cover_rate = data
-        user.save()
-
-        return True
-
-    finally:
-        return False # 操作失败
-
+        
 
 
 

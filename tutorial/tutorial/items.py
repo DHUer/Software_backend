@@ -15,13 +15,14 @@ class TutorialItem(scrapy.Item):
     pass
 
 class CnnItem(scrapy.Item):
-    title = scrapy.Field()
+    title = scrapy.Field() # 标题
     # link = scrapy.Field()
-    content = scrapy.Field()
-    author = scrapy.Field()
-    update_time = scrapy.Field()
-    url = scrapy.Field()
-    types = scrapy.Field()
-    pic = scrapy.Field()
-    cover_rate = scrapy.Field()
+    content = scrapy.Field() # 内容地址
+    author = scrapy.Field() # 作者
+    update_time = scrapy.Field() # 发布时间
+    url = scrapy.Field() # 网址
+    types = scrapy.Field() # 类别
+    pic = scrapy.Field() # 图片url
+    cover_rate = scrapy.Field() # 覆盖率
+    totalLett = scrapy.Field() # 单词数目
 

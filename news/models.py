@@ -42,14 +42,18 @@ class article(models.Model): # 自动生成主键并自增
     # 文章的获取日期
     date = models.DateField() 
 
+
     def __str__(self):
         return self.title
 
 
 class user(models.Model):
 
-    # 用户唯一标识
-    openid = models.CharField(max_length = MAX_LENGTH, primary_key = True)
+    # 用户唯一标识,加密后的信息
+    uid = models.CharField(max_length = MAX_LENGTH, primary_key = True)
+
+    # openid
+    openid = models.CharField(max_length = MAX_LENGTH)
 
     # 单词本，存放文件地址
     dict = models.CharField(max_length = MAX_LENGTH, null = True) 

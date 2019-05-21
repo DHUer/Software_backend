@@ -6,6 +6,8 @@ urlpatterns = [
     # TODO 此处添加映射的url地址
     path('test/',views.test),
     path('get_brief/',views.get_article_info),
-    path('get_detail/',views.get_article)
+    path('get_detail/',views.get_article),
+    path('userinfo/',views.createUser),
+    path('get_random/',views.randomWords)
 
 ]

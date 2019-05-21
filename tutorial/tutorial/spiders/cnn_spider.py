@@ -89,7 +89,7 @@ class CnnSpider(scrapy.spiders.Spider):
             f.write(json.dumps(content_list)) # 写入文件
 
         item['content'] = filename
-        item['cover_rate'] = get_cover_rate(item['title'], content) # 获取覆盖率，是一个dict
+        item['cover_rate'], item['totalLett'] = get_cover_rate(item['title'], content) # 获取覆盖率，是一个dict
 
         yield item
 
@@ -104,6 +104,7 @@ def get_cover_rate(title, para_list):
 
         # 统计词频
         words_box = []
+        totalLett = 0
         for para in para_list:
 
                 para = para.lower()
@@ -111,6 +112,7 @@ def get_cover_rate(title, para_list):
                 if re.match(r'[a-zA-Z]*', para):
 
                         words_box.extend(para.strip().split())
+                        totalLett = totalLett + len(para.strip().split()) # 统计总词数
 
         # 去重后的单词w_list
         w_list = list(collections.Counter(words_box))
@@ -169,7 +171,7 @@ def get_cover_rate(title, para_list):
         # with open(cwd+"\\res\\覆盖率.json",'a') as f:
         #         json.dump(cover_dict, f)
 
-        return cover_dict # 返回的是字典，key：对应词库名 value：对应覆盖率
+        return cover_dict, totalLett # 返回的是字典，key：对应词库名 value：对应覆盖率;总词数
 
 # scrapy crawl cnn -o items.json 可以存数据到json格式
 

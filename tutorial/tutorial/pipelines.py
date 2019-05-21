@@ -63,7 +63,7 @@ class JsonPipeline(object):
 
         cwd = os.getcwd() # 获取当前工作目录
         filepath = re.findall(r'(.+?)\\seprojext', cwd) # 获取项目绝对路径
-        filepath = filepath[0] + "\\seprojext\\res"
+        filepath = filepath[0] + "\\seprojext\\static\\res"
         
         if (not os.path.exists(filepath)):
             os.makedirs(filepath)

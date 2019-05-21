@@ -8,6 +8,8 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import sys
+import os
 
 BOT_NAME = 'tutorial'
 
@@ -101,3 +103,5 @@ MYSQL_PASSWORD = 'projext2019'
 ITEM_PIPELINES = {
     'tutorial.pipelines.JsonPipeline': 300,
 }
+
+
