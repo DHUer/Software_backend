@@ -184,3 +184,4 @@ def getNewsByType(request):
 def getAllCollection(request):
     return True
 
+
