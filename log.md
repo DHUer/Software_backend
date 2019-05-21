@@ -5,4 +5,7 @@
 
 * HOW TO USE BASE_DIR?
 > from django.conf import settings # correct way
-> base_dir = settings.BASE_DIR    d     dfadasdfasfd
+> base_dir = settings.BASE_DIR    
+
+* 判断list中是否有某个值
+  `if xxx in listone  `

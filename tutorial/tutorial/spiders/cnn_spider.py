@@ -140,7 +140,7 @@ def get_cover_rate(title, para_list):
         for lib_name in lib_list:
 
                 # 获取词库名
-                name =re.findall(r'(.+?)\.',str(lib_name))[0]
+                name = re.findall(r'(.+?)\.',str(lib_name))[0]
                 
                 print("正在读取 "+name+"的内容...")
 

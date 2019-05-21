@@ -149,14 +149,14 @@ def addWord(id, word):
 
     try:
         uuser = user.objects.get(uid = id)
-        bookpath = uuser.dict 
+        bookpath = uuser.dict  # get where book stores
 
         allwords = {}
 
-        with open(bookpath, 'r') as f:
+        with open(bookpath, 'r') as f: # read words 
             allwords = dict(json.load(f))
 
-        with open(bookpath, 'w') as f:
+        with open(bookpath, 'w') as f: # write new content
             if word in allwords.keys():
                 allwords[word] = allwords[word] + 1
             else:
@@ -171,6 +171,19 @@ def addWord(id, word):
         return True
 
 
+def get_book(id):
+
+    try:
+        uuser = user.objects.get(uid = id)
+        bookpath = uuser.dict  # get where book stores
+
+        with open(bookpath, 'r') as f:
+            allw = dict(json.load(f))
+
+        return allw # 返回字典内容
+    except:
+        print("读取单词本内容出错...")
+        return False
     
         
 
