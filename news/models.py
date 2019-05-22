@@ -11,8 +11,30 @@
 #     # content
 #     content = models.FilePathField()
 from django.db import models
+from django.utils import timezone
+
 
 MAX_LENGTH = 500
+
+
+class user(models.Model):
+
+    # 用户唯一标识,加密后的信息
+    uid = models.CharField(max_length = MAX_LENGTH, primary_key = True)
+
+    # openid
+    openid = models.CharField(max_length = MAX_LENGTH)
+
+    # 单词本，存放文件地址
+    dict = models.CharField(max_length = MAX_LENGTH, null = True) 
+
+    # 暂时考虑直接存放覆盖率
+    cover_rate = models.CharField(max_length = MAX_LENGTH, null = True) 
+
+
+    def __str__(self):
+        return self.openid
+
 class article(models.Model): # 自动生成主键并自增
 
     # 标题
@@ -40,50 +62,34 @@ class article(models.Model): # 自动生成主键并自增
     cover_rate = models.CharField(max_length = MAX_LENGTH)
 
     # 文章的获取日期
-    date = models.DateField() 
+    date = models.DateField(default=timezone.now()) 
 
 
     def __str__(self):
         return self.title
 
 
-class user(models.Model):
+class vocabulary(models.Model):
 
-    # 用户唯一标识,加密后的信息
-    uid = models.CharField(max_length = MAX_LENGTH, primary_key = True)
+    # 词汇量覆盖度
+    cover_rate = models.CharField(max_length=MAX_LENGTH, null = True)
 
-    # openid
-    openid = models.CharField(max_length = MAX_LENGTH)
+    # 外键是用户
+    user = models.ForeignKey(user , null = True, on_delete=models.CASCADE)
 
-    # 单词本，存放文件地址
-    dict = models.CharField(max_length = MAX_LENGTH, null = True) 
-
-    # 暂时考虑直接存放覆盖率
-    cover_rate = models.CharField(max_length = MAX_LENGTH, null = True) 
-
-    # 外键--收藏的文章
-    collectArticle = models.ForeignKey(article, on_delete=models.CASCADE, null = True)
-
-    def __str__(self):
-        return self.openid
+    # 测试事件
+    date = models.DateField(default=timezone.now())
 
 
 
-class Blog(models.Model):
-    
-    title = models.CharField(max_length=100, null=True)
+class collectArticle(models.Model):
 
-    def __str__(self):
-        return self.title
+    # 主键是自动的
 
+    # 设置两个外键
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
 
-class test(models.Model):
+    article = models.ForeignKey(article, on_delete=models.CASCADE)
 
-    name = models.CharField(max_length=100, null = True)
-
-
-
-
-
-
-
+    # collect date
+    date = models.DateField(default = timezone.now())

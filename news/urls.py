@@ -8,6 +8,6 @@ urlpatterns = [
     path('get_brief/',views.get_article_info),
     path('get_detail/',views.get_article),
     path('userinfo/',views.createUser),
-    path('get_random/',views.randomWords)
+    path('get_test_words/',views.randomWords)
 
 ]

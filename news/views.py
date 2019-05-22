@@ -35,7 +35,7 @@ def get_content(filepath):
 def get_article_info(request): 
 
     # 工作目录在root下和manage.py同级,然后res也在root下
-    datapath = base_dir + "\\res\\news.json"
+    datapath = base_dir + "\\static\\res\\news.json"
 
     articles = []
     with open(datapath, 'r') as f:
@@ -106,6 +106,7 @@ def randomWords(request):
 def createUser(request):
 
     print("create user...")
+    
 
     # 这里为了安全性不直接取出数据，而是通过request直接获取
     param = {
@@ -150,11 +151,17 @@ def createUser(request):
 
     return HttpResponse(en_uid) # 直接返回加密的字符串
 
-# todo 收藏文章
+# 收藏文章
 def collectArticle(request):
 
+    aid = request.GET.get("aid") # 获取文章id
+    uid = request.GET.get("openid") # get user id
 
-    return True
+    if collectArticles(uid, aid):
+        return HttpResponse(json.dumps("False"), content_type="application/json") # 收藏失败
+
+    else:
+        return HttpResponse(json.dumps("True"), content_type="application/json") # 收藏成功
 
 
 # todo 为测试对单词本进行操作
@@ -178,10 +185,24 @@ def addNewWords(request):
 
 # todo 按不同分类返回文章
 def getNewsByType(request):
+    types = request.GET.get("type")
+
     return True
 
 # todo 查看所有收藏文章
 def getAllCollection(request):
     return True
+
+# todo 返回历史测试记录
+def getRecordHistory(request):
+    return True
+
+
+# todo 获取测试结果并返回分析数据
+def getTestRes(request ):
+    return True
+
+
+
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 import json
 import ast
-from news.models import article,user
+from news.models import article,user, collectArticle
 import urllib
 import os
 import re
@@ -186,8 +186,19 @@ def get_book(id):
         return False
     
         
+# todo 未测试
+def collectArticles(uid, aid):
 
+    try:
+        # get objects respectively
+        user = user.objects.get(uid = uid)
+        article = article.objects.get(id = aid)
 
+        collect_record = collectArticle.objects.create(user = user, article = article)
+    except:
+        return False
+
+    return True
 
 
 
