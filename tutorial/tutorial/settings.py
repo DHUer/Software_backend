@@ -21,7 +21,7 @@ NEWSPIDER_MODULE = 'tutorial.spiders'
 #USER_AGENT = 'tutorial (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -105,3 +105,20 @@ ITEM_PIPELINES = {
 }
 
 
+USER_AGENT = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"
+
+
+IPPOOL=[  
+    {"ipaddr":"192.99.203.93"},  
+    {"ipaddr":"134.209.73.47"}, 
+    {"ipaddr":"167.99.231.73"}, 
+    {"ipaddr":"162.243.108.161"}, 
+    {"ipaddr":"124.152.32.140"}, 
+    {"ipaddr":"61.184.109.33"}
+]
+
+# DOWNLOADER_MIDDLEWARES = {
+# #    'myproxies.middlewares.MyCustomDownloaderMiddleware': 543,
+#      'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':543,
+#      'tutorial.middlewares.MyproxiesSpiderMiddleware':125
+# }

@@ -9,3 +9,8 @@
 
 * 判断list中是否有某个值
   `if xxx in listone  `
+
+* 测试用户;dd4e801c8984e9393bd424da0f32fca5
+
+
+* 清空数据库表中数据（不删除表）:python manage.py flush

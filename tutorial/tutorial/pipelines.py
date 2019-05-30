@@ -67,10 +67,8 @@ class JsonPipeline(object):
         
         if (not os.path.exists(filepath)):
             os.makedirs(filepath)
-        # print(filepath)
-        # time.sleep(20)
 
-        self.file = codecs.open(filepath+"\\news.json", 'w') # , encoding='utf-8'这个参数暂时不用，因为读取的时候会报错
+        self.file = codecs.open(filepath+"\\news.json", 'a') # , encoding='utf-8'这个参数暂时不用，因为读取的时候会报错
 
     def process_item(self, item, spider):
         line = json.dumps(dict(item), ensure_ascii=False) + "\n"
@@ -81,3 +79,4 @@ class JsonPipeline(object):
 
     def spider_closed(self, spider):
         self.file.close()
+        print("spider closed")

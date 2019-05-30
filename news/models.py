@@ -1,18 +1,8 @@
 # Create your models here.
 
-# class news(models.Model):
-#     # title
-#     title = models.CharField(max_length=255)
-
-#     # author
-#     author = models.CharField(max_length=255)
-
-#     # TODO 需要定义文章model来读取数据库的内容
-#     # content
-#     content = models.FilePathField()
 from django.db import models
 from django.utils import timezone
-
+import json
 
 MAX_LENGTH = 500
 
@@ -68,6 +58,22 @@ class article(models.Model): # 自动生成主键并自增
     def __str__(self):
         return self.title
 
+    def toJSON(self):
+        item = {}
+        item['id'] = self.id
+        item['title'] = self.title
+        item['date'] = self.date
+        item['content'] = self.content
+        item['author'] = self.author
+        item['atype'] = self.atype
+        item['picUrl'] = self.picUrl
+        item['lettNum'] = self.lettNum
+        item['publish_time'] = self.publish_time
+        item['cover_rate'] = self.cover_rate
+
+        return json.dumps(item)
+
+
 
 class vocabulary(models.Model):
 
@@ -77,7 +83,7 @@ class vocabulary(models.Model):
     # 外键是用户
     user = models.ForeignKey(user , null = True, on_delete=models.CASCADE)
 
-    # 测试事件
+    # 测试时间
     date = models.DateField(default=timezone.now())
 
 
@@ -93,3 +99,17 @@ class collectArticle(models.Model):
 
     # collect date
     date = models.DateField(default = timezone.now())
+
+
+
+class testHistory(models.Model):
+
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+
+    # 覆盖率
+    cover_rate = models.CharField(max_length = MAX_LENGTH)
+
+    # 测试日期
+    date = models.DateField(default = timezone.now())
+
+

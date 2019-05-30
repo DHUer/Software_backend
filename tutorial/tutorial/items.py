@@ -15,6 +15,7 @@ class TutorialItem(scrapy.Item):
     pass
 
 class CnnItem(scrapy.Item):
+    
     title = scrapy.Field() # 标题
     # link = scrapy.Field()
     content = scrapy.Field() # 内容地址

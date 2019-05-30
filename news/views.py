@@ -6,11 +6,13 @@ import json
 import urllib.request
 import random
 import base64
+import ast
 import hashlib
 from django.shortcuts import render
 from scrapy.cmdline import execute 
 from django.http import HttpResponse
-from news.models import article,user
+from django.core import serializers
+from news.models import article,user,vocabulary,collectArticle
 from django.conf import settings
 base_dir = settings.BASE_DIR # where manage.py lies
 from news.function import * # 直接用里面的函数就成，不用加function.xx了
@@ -27,71 +29,87 @@ def get_content(filepath):
 
     with open(filepath, 'r') as f:
         data = json.load(f) # 直接读出来就是list        
- 
+
     return data # 返回文章中所有单词list
 
 
-# 返回所有文章基本信息不包含内容，可以考虑从数据库中读取
+# 返回所有文章基本信息不包含内容
 def get_article_info(request): 
 
     # 工作目录在root下和manage.py同级,然后res也在root下
     datapath = base_dir + "\\static\\res\\news.json"
 
-    articles = []
-    with open(datapath, 'r') as f:
-        while True:
-            line = f.readline()
-            if not line:
-                break
+    article_list = article.objects.all()
+    res = serializers.serialize("json", article_list)
 
-            # print(line)
-            data = json.loads(line)
-            articles.append(data)
-            # print(data)
+    return HttpResponse(res, content_type="application/json") # 返回所有文章的基本信息
 
-    return HttpResponse(json.dumps(articles), content_type="application/json") # 返回所有文章的基本信息
-
-
-# 获取文章所有信息加内容
+# 获取文章所有信息加摘要
 def get_article(request):
 
     datapath = base_dir + "\\static\\res\\news.json"
 
-    article = []
-    try:
-        with open(datapath, 'r') as f:
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-                
-                data = json.loads(line)
-                filepath = data['content'] # 获取文章内容所在位置
-                data['content'] = get_content(filepath) # 获取文章内容
-                print(data['content'])
+    res = []
 
-                article.append(data)
-    except:
+    try:
+
+        article_list = article.objects.all()
+
+        for item in article_list:
+            with open(item.content, "r") as f:
+                content = json.load(f)
+
+            res.append({
+                "title":item.title,
+                "id":item.id,
+                "type":item.atype,
+                "num":item.lettNum,
+                "pic":item.picUrl,
+                "date":item.publish_time,
+                "author":item.author,
+                "content":content[0],
+                "cover_rate":item.cover_rate
+            })
+    except Exception as e:
+        print(e)
         print("获取文章信息失败")
 
-    return HttpResponse(json.dumps(article), content_type="application/json")
+    return HttpResponse(json.dumps(res), content_type="application/json")
 
 # 获取读者词汇掌握程度，推荐难度最适合的文章
-def get_similiar(request, paramList):
+def get_similiar(request, id):
 
     try:
-        user_rate = json.loads(request.GET.get("cover_rate")) # 获取参数
-        res = function.top_n(user_rate)
-    except:
+        res = {}
+
+        curr_user = user.objects.get(uid = id)
+        all_c_r = vocabulary.objects.filter(user = curr_user)
+
+        if len(all_c_r) == 0: # 如果没有测试过，返回假
+            res['flag'] = False
+
+        else:
+            res['flag'] = True
+
+            c_r  = all_c_r[len(all_c_r) - 1].cover_rate # 获取最新的测试数据
+
+            cover_rate = ast.literal_eval(c_r) # 将文章覆盖率转成字典
+            
+            c_r_list = []
+
+            for key in cover_rate:
+                c_r_list.append(cover_rate[key]) # 覆盖率存入list
+
+            res['article'] = top_n(c_r_list)
+    except Exception as e:
+        print(e)
         print("推荐难度最合适文章出错...")
     
 
     return HttpResponse(json.dumps(res), content_type="application/json")
 
-
 # TODO 按不同难度返回文章
 def diffidegree(request):
-
     return True
 
 # 随机从各个词库抽取单词返回给前端
@@ -100,7 +118,6 @@ def randomWords(request):
     res = get_random_words()
 
     return HttpResponse(json.dumps(res), content_type="application/json")
-
 
 # 创建用户
 def createUser(request):
@@ -152,10 +169,10 @@ def createUser(request):
     return HttpResponse(en_uid) # 直接返回加密的字符串
 
 # 收藏文章
-def collectArticle(request):
+def collect(request, aid, uid):
 
-    aid = request.GET.get("aid") # 获取文章id
-    uid = request.GET.get("openid") # get user id
+    # aid = request.GET.get("aid") # 获取文章id
+    # uid = request.GET.get("openid") # get user id
 
     if collectArticles(uid, aid):
         return HttpResponse(json.dumps("False"), content_type="application/json") # 收藏失败
@@ -163,46 +180,106 @@ def collectArticle(request):
     else:
         return HttpResponse(json.dumps("True"), content_type="application/json") # 收藏成功
 
-
-# todo 为测试对单词本进行操作
+# 为测试对单词本进行操作
 # op:0 -- add, 1 -- delete, 2 -- get all words 
-def addNewWords(request):
-
-    op = request.GET.get("op")
-    id = request.GET.get("id") # 或许应该是session id?
+def voca_book(request, uid, op, word):
 
     if op == 0:
-        word = request.GET.get("word")
-        addWord(id, word)
+
+        addWord(uid, word)
 
     elif op == 1:
-        word = request.GET.get("word")
-        deleteWord(id, word)
+
+        deleteWord(uid, word)
     
     else:
-        res = get_book(id)
+        res = get_book(uid)
         return HttpResponse(json.dumps(res), content_type="application/json")
 
-# todo 按不同分类返回文章
-def getNewsByType(request):
-    types = request.GET.get("type")
+    return HttpResponse("True")
 
-    return True
+# 按不同分类返回文章
+def getNewsByType(request, types):
+    # types = request.POST['type']
 
-# todo 查看所有收藏文章
-def getAllCollection(request):
-    return True
+    all_articles = article.objects.filter(atype__iexact = types) # case insensitive
+    res = serializers.serialize("json", all_articles)
 
-# todo 返回历史测试记录
-def getRecordHistory(request):
-    return True
+    return HttpResponse(res, content_type="application/json")
 
+# 查看所有收藏文章
+def getAllCollection(request,uid):
 
-# todo 获取测试结果并返回分析数据
-def getTestRes(request ):
-    return True
+    curr_user = user.objects.get(uid = uid)
 
+    print("curr user is " + str(curr_user))
 
+    collection_list = []
+    arti_list = collectArticle.objects.filter(user = curr_user).values("article") # 获取该用户所有收藏信息
+    
+    for item in arti_list:
+        aid = item['article']
+        news = article.objects.get(id = aid) # get article
+        
+        collection_list.append(news)
+
+    res = serializers.serialize("json", collection_list)
+
+    return HttpResponse(res , content_type="application/json") # 只返回
+
+# 返回历史测试记录
+def getRecordHistory(request, uid):
+
+    curr_user = user.objects.get(uid = uid)
+
+    test_record = vocabulary.objects.filter( user = curr_user)
+
+    res = serializers.serialize("json", test_record)
+
+    return HttpResponse(res , content_type="application/json")
+
+# 获取测试结果并返回分析数据
+def saveTestRes(request):
+
+    res = request.GET.get('cover_rate')
+    id = request.GET.get('uid')
+
+    curr_user = user.objects.get(uid = id)
+    
+    print(curr_user)
+    print(res)
+
+    record = vocabulary(cover_rate = res, user = curr_user) # 创建新的测试记录
+
+    record.save()
+
+    return HttpResponse("True")
+
+# 根据文章id获取文章内容
+def getArticleById(request,aid):
+
+    item = article.objects.get(id = aid)
+
+    filepath = item.content
+    
+    article_brief_info = {
+                "title":item.title,
+                "id":item.id,
+                "type":item.atype,
+                "num":item.lettNum,
+                "pic":item.picUrl,
+                "date":item.publish_time,
+                "author":item.author,
+                "content":get_content(filepath),
+                "cover_rate":item.cover_rate
+    }
+
+    return HttpResponse(json.dumps(article_brief_info), content_type = "application/json")
+
+# 返回音频
+def get_mp3(request,aid):
+    get_voice()
+    return HttpResponse("hah")
 
 
 

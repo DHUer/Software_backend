@@ -14,6 +14,4 @@ def executeSpider():
     print(os.getcwd())
     execute("scrapy crawl cnn".split())
 
-    # TODO 还是有问题，本来想调用的时候切换工作目录，但还是会有找不到包的问题
-
 executeSpider()

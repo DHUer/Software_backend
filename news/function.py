@@ -1,12 +1,13 @@
 import numpy as np
 import json
 import ast
-from news.models import article,user, collectArticle
+from news.models import article,user, collectArticle, vocabulary
 import urllib
 import os
 import re
 import random
 from datetime import datetime
+import traceback
 from django.forms.models import model_to_dict
 from django.core import serializers
 from django.conf import settings
@@ -20,46 +21,52 @@ def hello():
     return "this is function~"
 
 
-# 获取最合适的10篇文章，sample是用户数据
+# 获取最合适的10篇文章，sample是用户数据(user)
 def top_n(sample):
 
-    # 对数据库操作
-    data = article.objects.all() # get all articles
+    try:
+        # 对数据库操作
+        data = article.objects.all() # get all articles
 
-    # 只抽取文章的内容地址以及覆盖率来比较,key是content，value是cover_rate
-    res = {}
+        # 只抽取文章的内容地址以及覆盖率来比较,key是content，value是cover_rate
+        res = {}
 
-    for item in data: # 计算所有文章的相似度
-        c_r = item.cover_rate
-        cover_rate = ast.literal_eval(c_r) # 将文章覆盖率转成字典
-        c_r_list = []
+        for item in data: # 计算所有文章的相似度
+            
+            c_r = item.cover_rate
 
-        for key in cover_rate:
-            c_r_list.append(cover_rate[key]) # 覆盖率存入list
+            cover_rate = ast.literal_eval(c_r) # 将文章覆盖率转成字典
 
-        dist = np.sqrt(np.sum(np.square(sample - np.asarray(c_r_list)))) # sample是用户词汇覆盖度数据
+            c_r_list = []
 
-        res[item.id] = dist # 以id作为字典字段
-        
-    sort_list = sorted(res.items(), key = lambda item:item[1], reverse = True)
-    sort_list = sort_list[:10] # 只取前十个
+            for key in cover_rate:
+                c_r_list.append(cover_rate[key]) # 覆盖率存入list
 
-    # 获取文章内容
-    res = []
-    for key in sort_list:
-        item = article.objects.get(id = key[0])
-        with open(item.content, 'r') as f:
-            item.content = f.read()
+            dist = np.sqrt(np.sum(np.square(sample - np.asarray(c_r_list)))) # sample是用户词汇覆盖度数据
 
-        item_dict = dict(
-            id=item.id, title=item.title, author=item.author,
-            atype=item.atype, picUrl=item.picUrl, lettNum=item.lettNum,
-            publish_time=item.publish_time
-        )
-        res.append(item_dict)
-        # print(type(item))
+            res[item.id] = dist # 以id作为字典字段
+            
+        sort_list = sorted(res.items(), key = lambda item:item[1], reverse = True)
+        sort_list = sort_list[:10] # 只取前十个
 
-    return res # list
+        # 获取文章内容
+        res = []
+        for key in sort_list:
+            item = article.objects.get(id = key[0])
+            with open(item.content, 'r') as f:
+                item.content = json.load(f)[0] # 只取第一段摘要
+
+            item_dict = dict(
+                id=item.id, title=item.title, author=item.author,
+                atype=item.atype, picUrl=item.picUrl, lettNum=item.lettNum,
+                publish_time=item.publish_time,content = item.content
+            )
+            res.append(item_dict)
+            # print(type(item))
+    except Exception as e:
+        print(e)
+
+    return res # list，直接返回所有文章信息以及摘要
 
 def get_random_words():
     
@@ -115,14 +122,18 @@ def save_articles():
             # 读出数据
             data = json.loads(line) # dictionary
             
+            # 判断文件大小，如果为空表示没有扒下来，不存入数据库
+            if os.path.getsize(data['content']) == 0:
+                continue
+
             # 存入数据库
             addOne = article(title = data['title'], content = data['content'], author = data['author'],
-                    atype = data['types'], picUrl = "", lettNum = 0, publish_time = data['update_time'], 
+                    atype = data['types'], picUrl = data['pic'], lettNum = data['totalLett'], publish_time = data['update_time'], 
                     cover_rate = str(data['cover_rate']), date = datetime.now())
 
             addOne.save()
 
-# todo 删除单词，还没测试
+# 删除单词
 def deleteWord(id, word):
 
     try:
@@ -130,26 +141,30 @@ def deleteWord(id, word):
         bookpath = uuser.dict # 获取单词本所在位置
 
 
-        with open(bookpath, 'w') as f:
-            allwords = list(json.loads(f))
+        with open(bookpath, 'r') as f:
+            allwords = dict(json.load(f))
 
-            if word in allwords:
-                allwords.remove(word)
+        with open(bookpath,'w') as f:
+            if word in allwords.keys():
+                allwords.pop(word)
 
             f.write(json.dumps(allwords))
 
-    except:
+    except Exception as e:
         print("删除单词出错")
+        traceback.print_exc()
         return False
 
     return True
 
-# todo 添加生词，还没测试
+# 添加生词
 def addWord(id, word):
 
     try:
         uuser = user.objects.get(uid = id)
         bookpath = uuser.dict  # get where book stores
+
+        print ("user is " + str(uuser))
 
         allwords = {}
 
@@ -170,7 +185,7 @@ def addWord(id, word):
     else:
         return True
 
-
+# 查看单词本
 def get_book(id):
 
     try:
@@ -186,21 +201,42 @@ def get_book(id):
         return False
     
         
-# todo 未测试
+# 收藏文章
 def collectArticles(uid, aid):
 
     try:
         # get objects respectively
-        user = user.objects.get(uid = uid)
-        article = article.objects.get(id = aid)
+        print(uid)
+        print(aid)
 
-        collect_record = collectArticle.objects.create(user = user, article = article)
+        u = user.objects.get(uid = "dyx")
+        a = article.objects.get(id = 1)
+
+        print(u)
+        print(a)
+
+        new_item = collectArticle(user = u, article = a)
+        new_item.save()
+
+        print(collectArticle.objects.all())
+
     except:
         return False
 
     return True
 
 
+def get_voice():
+    # 获取文本语音
+    token_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=%s&client_secret=%s"
 
-        
+    # 获取token
+    api_key = "GfaYQjjmykKRdjcf2j3gO0Ew"
+    api_secret = "HTNN7irn96nrD8VDRVrXfFzfhFkbT8Ft"
+    url = token_url % (api_key, api_secret)
+
+    res = request.post(url)
+
+    token_str = json.loads(res.text)["access_token"]
+    print("token is " + token_str)
 
