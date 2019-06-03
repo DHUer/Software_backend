@@ -1,5 +1,10 @@
 import numpy as np
 import json
+import base64
+import requests
+import urllib.request
+import urllib.parse
+from urllib.request import urlopen
 import ast
 from news.models import article,user, collectArticle, vocabulary
 import urllib
@@ -202,15 +207,15 @@ def get_book(id):
     
         
 # 收藏文章
-def collectArticles(uid, aid):
+def collectArticles(id, aid):
 
     try:
         # get objects respectively
-        print(uid)
+        print(id)
         print(aid)
 
-        u = user.objects.get(uid = "dyx")
-        a = article.objects.get(id = 1)
+        u = user.objects.get(uid = id)
+        a = article.objects.get(id = aid)
 
         print(u)
         print(a)
@@ -220,13 +225,14 @@ def collectArticles(uid, aid):
 
         print(collectArticle.objects.all())
 
-    except:
+    except Exception as e:
+        print(e)
         return False
 
     return True
 
 
-def get_voice():
+def get_voice(txt, filename):
     # 获取文本语音
     token_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=%s&client_secret=%s"
 
@@ -235,8 +241,21 @@ def get_voice():
     api_secret = "HTNN7irn96nrD8VDRVrXfFzfhFkbT8Ft"
     url = token_url % (api_key, api_secret)
 
-    res = request.post(url)
+    res = requests.post(url)
 
     token_str = json.loads(res.text)["access_token"]
     print("token is " + token_str)
+
+    data={'tex':txt,'lan':'zh','spd':5,'vol':9,'pit':5,'per':3,'cuid':"get_voice",'ctp':1,'tok':token_str}
+    getvoice_url = "http://tsn.baidu.com/text2audio"
+    voice_data=requests.post(getvoice_url,data=data,stream=True)
+
+    print("正在存储 " + filename + "音频...")
+    voice_fp = open(base_dir+"\\static\\audio\\" + filename,'wb+')
+    voice_fp.write(voice_data.raw.read())
+    voice_fp.close() 
+
+
+
+
 

@@ -21,7 +21,7 @@ VOCA_BOOK = base_dir+"\\static\\voca_book\\" # 单词本根目录
 # Create your views here.
 
 def test(request):
-    return HttpResponse(base_dir)
+    return HttpResponse(open(r"G:\\CloudMusic\\Time travel.mp3",'rb'),content_type="audio/mp3")
 
 
 # 根据文章路径读取内容
@@ -101,6 +101,7 @@ def get_similiar(request, id):
                 c_r_list.append(cover_rate[key]) # 覆盖率存入list
 
             res['article'] = top_n(c_r_list)
+            
     except Exception as e:
         print(e)
         print("推荐难度最合适文章出错...")
@@ -175,10 +176,10 @@ def collect(request, aid, uid):
     # uid = request.GET.get("openid") # get user id
 
     if collectArticles(uid, aid):
-        return HttpResponse(json.dumps("False"), content_type="application/json") # 收藏失败
+        return HttpResponse(json.dumps("True"), content_type="application/json") # 收藏失败
 
     else:
-        return HttpResponse(json.dumps("True"), content_type="application/json") # 收藏成功
+        return HttpResponse(json.dumps("False"), content_type="application/json") # 收藏成功
 
 # 为测试对单词本进行操作
 # op:0 -- add, 1 -- delete, 2 -- get all words 
@@ -208,15 +209,17 @@ def getNewsByType(request, types):
     return HttpResponse(res, content_type="application/json")
 
 # 查看所有收藏文章
-def getAllCollection(request,uid):
+def getAllCollection(request,id):
 
-    curr_user = user.objects.get(uid = uid)
+    curr_user = user.objects.get(uid = id)
 
     print("curr user is " + str(curr_user))
 
     collection_list = []
     arti_list = collectArticle.objects.filter(user = curr_user).values("article") # 获取该用户所有收藏信息
     
+    print(arti_list)
+
     for item in arti_list:
         aid = item['article']
         news = article.objects.get(id = aid) # get article
@@ -278,8 +281,30 @@ def getArticleById(request,aid):
 
 # 返回音频
 def get_mp3(request,aid):
-    get_voice()
-    return HttpResponse("hah")
+
+    item = article.objects.get(id = aid)
+    filepath = item.content 
+
+    with open(filepath,'r',encoding='UTF-8') as f:
+        content = json.load(f)
+
+    txt = ""
+    for para in content:
+        for word in para:
+            txt = txt + word + " "
+    filename = str(item.id)+".mp3"
+
+    get_voice(txt, filename)
+    
+    filepath = base_dir + "\\static\\audio\\" + filename
+
+    with open(filepath, 'rb') as f:
+        response = HttpResponse()
+        response.write(f.read())
+        response['Content-Type'] ='audio/mp3'
+        response['Content-Length'] =os.path.getsize(filepath)
+
+    return response
 
 
 
