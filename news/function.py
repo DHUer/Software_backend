@@ -256,6 +256,31 @@ def get_voice(txt, filename):
     voice_fp.close() 
 
 
+def getPic():
+
+    all_article = article.objects.all()
+
+    index = 0
+    for item in all_article:
+
+        picUrl = item.picUrl
+        curr = article.objects.get(id = item.id)
+
+        html = requests.get("http:" + picUrl)
+
+        filepath = base_dir+"\\static\\pic\\" + "pic" + str(index) + ".jpg"
+
+        with open(filepath,'wb') as f:
+
+            f.write(html.content)
+        
+        curr.picUrl = filepath
+        curr.save()
+
+        index = index + 1
+
+
+
 
 
 
