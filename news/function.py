@@ -59,7 +59,7 @@ def top_n(sample):
         for key in sort_list:
             item = article.objects.get(id = key[0])
             with open(item.content, 'r') as f:
-                item.content = json.load(f)[0] # 只取第一段摘要
+                item.content = json.load(f) # 取全部内容
 
             item_dict = dict(
                 id=item.id, title=item.title, author=item.author,

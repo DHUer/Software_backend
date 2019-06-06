@@ -32,6 +32,36 @@ def get_content(filepath):
 
     return data # 返回文章中所有单词list
 
+# 返回所有文章内容
+def get_article_content(request):
+    datapath = base_dir + "\\static\\res\\news.json"
+
+    res = []
+
+    try:
+
+        article_list = article.objects.all()
+
+        for item in article_list:
+            with open(item.content, "r") as f:
+                content = json.load(f)
+
+            res.append({
+                "title":item.title,
+                "id":item.id,
+                "type":item.atype,
+                "num":item.lettNum,
+                "pic":item.picUrl,
+                "date":item.publish_time,
+                "author":item.author,
+                "content":content,
+                "cover_rate":item.cover_rate
+            })
+    except Exception as e:
+        print(e)
+        print("获取文章信息失败")
+
+    return HttpResponse(json.dumps(res), content_type="application/json")
 
 # 返回所有文章基本信息不包含内容
 def get_article_info(request): 
