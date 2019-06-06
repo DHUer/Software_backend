@@ -280,6 +280,20 @@ def getPic():
         index = index + 1
 
 
+def modify_pic():
+    all_article = article.objects.all()
+
+    index = 0
+    for item in all_article:
+        curr = article.objects.get(id = item.id)
+        
+        curr.picUrl = "pic" + str(index) + ".jpg"
+        curr.save()
+
+        index = index + 1
+
+
+
 
 
 
