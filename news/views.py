@@ -281,8 +281,21 @@ def saveTestRes(request):
     
     print(curr_user)
     print(res)
+    # TODO 处理修改后的返回结果，未测试
+    c_r_list = list(json.loads(res))
+    # "cet4": 0.588, "cet6": 0.032, "gaozhong": 0.332, "gre": 0.024, "ielts": 0.28, "kaoyan": 0.42, "toefl": 0.044
+    c_r = {}
+    c_r["cet4"] = c_r_list[0]
+    c_r["cet6"] = c_r_list[1]
+    c_r["gaozhong"] = c_r_list[2]
+    c_r["gre"] = c_r_list[3]
+    c_r["ielts"] = c_r_list[4]
+    c_r["kaoyan"] = c_r_list[5]
+    c_r["toefl"] = c_r_list[6]
 
-    record = vocabulary(cover_rate = res, user = curr_user) # 创建新的测试记录
+    print(c_r)
+
+    record = vocabulary(cover_rate = json.dumps(c_r), user = curr_user) # 创建新的测试记录
 
     record.save()
 

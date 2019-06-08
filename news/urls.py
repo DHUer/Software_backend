@@ -13,6 +13,7 @@ from . import  views
 7、关于考研/托福/雅思等分类，直接在前端进行判断（根据文章词汇覆盖度最高的一项分类）
 8、最近浏览可以直接在前端的缓存中记录/也可以不实现。
 '''
+
 urlpatterns = [
     path('test/',views.test),
 
