@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="%E8%BD%BB%E6%98%93%E5%9C%A8%E7%BA%BF%E9%98%85%E8%AF%BB%E5%B0%8F%E7%A8%8B%E5%BA%8F">轻易在线阅读小程序</h1>
+<h2 id="1%E3%80%81%E9%80%89%E9%A2%98%E5%8E%9F%E5%9B%A0">1、选题原因</h2>
+<ul>
+<li>
+<p>why wechat applets?</p>
+<ul>
+<li><strong>英语新闻类</strong>阅读小程序较少。</li>
+<li>现有阅读小程序大多<strong>需要付费</strong>或者是<strong>免费但需要强制性推广</strong>。</li>
+<li>小程序阅读<strong>可选择范围有限</strong>，并且无法个性化推荐。</li>
+</ul>
+</li>
+<li>
+<p>why news?</p>
+<ul>
+<li>书面化语言，<strong>严谨</strong>，有助于提高阅读能力</li>
+<li>紧跟<strong>时事热点</strong>，学习最新表达</li>
+<li>涵盖<strong>范围广</strong>，多角度看待问题</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2%E3%80%81%E5%8A%9F%E8%83%BD%E7%82%B9">2、功能点</h2>
+<h3 id="21-%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD%E7%82%B9">2.1 主要功能点</h3>
+<ul>
+<li>
+<p><strong>爬取各大外国新闻网站文章</strong></p>
+<ul>
+<li>一天爬一次</li>
+<li>数据存到服务器</li>
+<li>对文章进行一定的处理。将基本信息提取出来形成字段。</li>
+</ul>
+</li>
+<li>
+<p>轻触即可<strong>取词翻译</strong></p>
+<ul>
+<li>选择合适的查词api接口</li>
+</ul>
+</li>
+<li>
+<p><strong>生词本</strong></p>
+<ul>
+<li>简单的温习方式（参考欧陆）</li>
+<li>记录词频（查过多少回）</li>
+<li>随时随地背单词</li>
+</ul>
+</li>
+<li>
+<p><strong>测试词汇量</strong></p>
+<ul>
+<li>抽样选择测试词汇</li>
+<li>根据测试结果记录用户词汇量覆盖范围以及程度</li>
+</ul>
+</li>
+<li>
+<p><strong>根据词汇量推荐文章</strong></p>
+<ul>
+<li>针对用户的词汇量/兴趣每天推荐一篇</li>
+<li>用户可以按照分类选择自己感兴趣的题材</li>
+</ul>
+</li>
+<li>
+<p><strong>收藏文章/查看最近浏览</strong></p>
+<ul>
+<li>记录用户感兴趣的文章</li>
+<li>将最近浏览的文章存到缓存</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3%E3%80%81%E7%9B%B8%E5%85%B3%E6%8A%80%E6%9C%AF%E4%B8%8E%E8%B5%84%E6%96%99%E6%94%B6%E9%9B%86">3、相关技术与资料收集</h2>
+<h3 id="31-%E6%8A%80%E6%9C%AF%E6%A6%82%E8%A7%88">3.1 技术概览</h3>
+<ul>
+<li>前端：微信小程序开发全家桶</li>
+<li>后端：scrapy与django</li>
+<li>数据库：sqlite</li>
+<li>辅助：github协同开发</li>
+</ul>
+<h3 id="32-%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3">3.2 技术文档</h3>
+<ul>
+<li>
+<p>微信小程序官方文档</p>
+<p>https://developers.weixin.qq.com/miniprogram/dev/index.html</p>
+</li>
+<li>
+<p>一条龙服务repo</p>
+<p>https://github.com/justjavac/awesome-wechat-weapp</p>
+</li>
+<li>
+<p>小程序登录、获取用户信息、openid和unionid详解</p>
+<p>https://www.daguanren.cc/post/wxlogin_getuserinfo_openid_unionid.html</p>
+</li>
+<li>
+<p>保持登陆状态具体解决办法</p>
+<p>https://www.cnblogs.com/gdutzyh/p/7251432.html</p>
+</li>
+</ul>
+<hr>
+<h2 id="4%E3%80%81%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E5%B1%95%E7%A4%BA">4、核心技术展示</h2>
+<h3 id="41-%E5%90%8E%E7%AB%AF">4.1 后端</h3>
+<ul>
+<li>整体业务流程</li>
+</ul>
+<div align=center>
+<p><img src="display-images/getArticle.png" alt="image"></p>
+</div>
+<ul>
+<li>example</li>
+</ul>
+<div align=center>  
+<p><img src="display-images/lib.jpg" alt="image"></p>
+</div>
+<pre class="hljs"><code><div>user a:{
+    &quot;cet4&quot;: 0.48412698412698413, 
+    &quot;cet6&quot;: 0.05555555555555555, 
+    &quot;gaozhong&quot;: 0.24603174603174602, 
+    &quot;gre&quot;: 0.05555555555555555, 
+    &quot;ielts&quot;: 0.3412698412698413, 
+    &quot;kaoyan&quot;: 0.31746031746031744, 
+    &quot;toefl&quot;: 0.07936507936507936
+}
+news b:{
+    &quot;cet4&quot;: 0.5355450236966824, 
+    &quot;cet6&quot;: 0.05687203791469194, 
+    &quot;gaozhong&quot;: 0.2559241706161137, 
+    &quot;gre&quot;: 0.05924170616113744, 
+    &quot;ielts&quot;: 0.3412322274881517, 
+    &quot;kaoyan&quot;: 0.42890995260663506, 
+    &quot;toefl&quot;: 0.12559241706161137
+}
+
+# 计算欧氏距离
+ dist = np.sqrt(np.sum(np.square(sample - np.asarray(c_r_list)))) 
+</div></code></pre>
+<ul>
+<li>
+<p>爬虫部分</p>
+<ul>
+<li>肉眼观察cnn网站中的<strong>标签元素</strong>，获取<strong>关键信息</strong>（内容/标题/作者等）</li>
+<li>在scrapy中编写代码<strong>提取标签元素中的内容</strong></li>
+<li>在获取内容的同时对文本内容做出处理，清洗数据，提取内容</li>
+<li>最后将文本<strong>存入本地</strong>（更好的办法是直接将scrapy与django联系起来）</li>
+</ul>
+</li>
+<li>
+<p>django部分</p>
+<ul>
+<li>将功能<strong>映射</strong>到相应的url上以供调用</li>
+<li>key points
+<ul>
+<li>如何对用户进行标识，并记录登陆状态？
+<img src="display-images/process.jpg" alt="image"></li>
+<li>对cnn网站访问过于频繁，被网站拒绝访问？</li>
+</ul>
+<pre class="hljs"><code><div>IPPOOL=[  
+{&quot;ipaddr&quot;:&quot;192.99.203.93&quot;},  
+{&quot;ipaddr&quot;:&quot;134.209.73.47&quot;}, 
+{&quot;ipaddr&quot;:&quot;167.99.231.73&quot;}, 
+{&quot;ipaddr&quot;:&quot;162.243.108.161&quot;}, 
+{&quot;ipaddr&quot;:&quot;124.152.32.140&quot;}, 
+{&quot;ipaddr&quot;:&quot;61.184.109.33&quot;}]
+</div></code></pre>
+<ul>
+<li>框架太庞大，爬取速度慢？</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-%E5%89%8D%E7%AB%AF">4.2 前端</h3>
+<ul>
+<li>
+<p>多人如何协同开发前端，提高开发效率？👍</p>
+<ul>
+<li>利用版本管理工具Git，以及代码托管仓库GitHub，本项目的三个collaborator可以协同push。</li>
+<li>组件化开发，每一个界面都是一个独立的组件</li>
+</ul>
+</li>
+<li>
+<p>轻触即可<strong>取词翻译</strong> 🤐</p>
+<ul>
+<li>
+<p>用户长按不是可以调用系统底层函数来查词么，此功能是否显得多余？(+_+)?</p>
+<p>答：系统底层的词典识别，需要用户长按耗时比较长。而且再阅读英文文章的时候，查阅生词比较频繁，此功能只需要用户轻触就可查词(⓿_⓿)，所以此功能能极大的改善用户体验。</p>
+</li>
+<li>
+<p>实现此功能的思路的关键词？🙃</p>
+<ul>
+<li>后端文本分词</li>
+<li>前端每个单词API绑定</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>推荐文章及热点文章界面显示</p>
+<ul>
+<li>界面组件化：Wepy，WeUI，IViewUI组件库</li>
+<li>文章概要预览：
+<ul>
+<li>难度等级（四六级、考研、托福、GRE）</li>
+<li>文章类别（Education、Science、Life）</li>
+<li>标题</li>
+<li>文章字数</li>
+<li>文章阅读人数（mock数据）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>页面懒加载与解决小程序异步数据不同步的问题</p>
+<ul>
+<li>
+<p>小程序中的网络请求是异步实现机制，如何解决需要同步请求数据渲染的请求？</p>
+<p>解决方案：Pormise化，所有的请求必须等待promise完成后进行then操作</p>
+</li>
+<li>
+<p>页面懒加载</p>
+<p>渲染更快</p>
+</li>
+</ul>
+</li>
+<li>
+<p>查词接口</p>
+<ul>
+<li>
+<p>有道Restful Web API</p>
+<ul>
+<li>单词的考试等级</li>
+<li>发音，释义</li>
+</ul>
+</li>
+<li>
+<p>扇贝API</p>
+<ul>
+<li>大量双语例句获取</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>图形化组件库</p>
+<ul>
+<li>wxcharts</li>
+</ul>
+<div align=center>
+<p><img src="display-images/图形1.png" alt="image"><img src="display-images/图形2.png" alt="image"></p>
+  </div>
+</li>
+</ul>
+<hr>
+<h2 id="5%E3%80%81%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA">5、效果展示</h2>
+<div align=center>
+<h3 id="51-%E4%B8%BB%E9%98%85%E8%AF%BB%E7%95%8C%E9%9D%A2">5.1 主阅读界面</h3>
+<p><img src="display-images/主阅读界面.gif" alt="image"></p>
+<h3 id="52-%E5%8D%95%E8%AF%8D%E6%9C%AC%E7%95%8C%E9%9D%A2">5.2 单词本界面</h3>
+<p><img src="display-images/单词本.gif" alt="image"></p>
+<h3 id="53-%E6%94%B6%E8%97%8F%E6%96%87%E7%AB%A0%E7%95%8C%E9%9D%A2">5.3 收藏文章界面</h3>
+<p><img src="display-images/收藏文章.gif" alt="image"></p>
+<h3 id="54-%E8%83%8C%E5%8D%95%E8%AF%8D%E7%95%8C%E9%9D%A2">5.4 背单词界面</h3>
+<p><img src="display-images/背单词信息.gif" alt="image"></p>
+<h3 id="55-%E5%8D%95%E8%AF%8D%E9%87%8F%E6%B5%8B%E8%AF%95%E7%95%8C%E9%9D%A2">5.5 单词量测试界面</h3>
+<p><img src="display-images/词汇量测试.gif" alt="image"></p>
+<h3 id="56-%E6%96%87%E7%AB%A0%E6%8E%A8%E8%8D%90%E4%B8%BB%E7%95%8C%E9%9D%A2">5.6 文章推荐主界面</h3>
+<p><img src="display-images/文章推荐.gif" alt="image"></p>
+</div >
+<h2 id="6%E3%80%81%E6%80%BB%E7%BB%93">6、总结</h2>
+<ul>
+<li>三个臭皮匠顶个诸葛亮:)</li>
+</ul>
+<div align=center>
+<p><img src="display-images/team.PNG" alt="image"></p>
+</div>
+<ul>
+<li>理想很丰满，现实很骨感。技术很酷炫，可惜用不上。</li>
+</ul>
+<div align=center>
+<p><img src="display-images/pro.jpg" alt="image"></p>
+</div>
+<ul>
+<li>利用文档和注释敲定细节hin重要！</li>
+</ul>
+<pre class="hljs"><code><div>'''
+注意：
+1、所有功能均能测试
+2、有的参数是通过url直接传递，请务必遵循path第一个参数的格式
+3、有的参数是放在request部分，可在代码部分查看（一般就在前几行，形如request.get...）
+4、进行用户相关的操作请务必先创建用户
+5、404错误一般有可能是url部分错了，没和下面匹配到
+6、有bug请务必及时反馈，最好附上截图，方便复现。
+7、关于考研/托福/雅思等分类，直接在前端进行判断（根据文章词汇覆盖度最高的一项分类）
+8、最近浏览可以直接在前端的缓存中记录/也可以不实现。
+'''
+urlpatterns = [
+    # 单词本
+    path('voca_book/&lt;int:op&gt;/&lt;str:uid&gt;/&lt;str:word&gt;/',views.voca_book),   
+    # op:0 -- add, 1 -- delete, 2 -- get all words  如果是获取所有单词，在word部分也要随便传个参数(即，word参数不能为空)
+...
+
+</div></code></pre>
+
+</body>
+</html>
